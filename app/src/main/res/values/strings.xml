@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">KotlinFragmentSharing</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="resource_button">RECORD</string>
+    <string name="play_button">PLAY</string>
+</resources>
