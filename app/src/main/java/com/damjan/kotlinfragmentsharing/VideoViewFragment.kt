@@ -1,6 +1,7 @@
 package com.damjan.kotlinfragmentsharing
 
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.net.Uri
 import android.support.v4.app.Fragment
@@ -17,19 +18,17 @@ private const val VID_URI = "videoUri"
 class VideoViewFragment : Fragment() {
 
     private var videoUri: Uri? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            videoUri = it.getParcelable(VID_URI)
-        }
+    private val videoUriViewModel by lazy {
+        ViewModelProviders.of(activity!!).get(VideoUriViewModel::class.java)
     }
 
     override fun onStart() {
         super.onStart()
 
-        videoView.setVideoURI(videoUri)
-        videoView.start()
+        if(videoUriViewModel.videoUri != null) {
+            videoView.setVideoURI(videoUriViewModel.videoUri)
+            videoView.start()
+        }
     }
 
     override fun onPause() {
@@ -50,12 +49,7 @@ class VideoViewFragment : Fragment() {
 
     companion object {
         private val TAG = VideoIntentFragment::class.qualifiedName
-        @JvmStatic
-        fun newInstance(uri: Uri) =
-                VideoViewFragment().apply {
-                    arguments = Bundle().apply {
-                        putParcelable(VID_URI, uri)
-                    }
-                }
+
+        @JvmStatic fun newInstance() = VideoViewFragment()
     }
 }

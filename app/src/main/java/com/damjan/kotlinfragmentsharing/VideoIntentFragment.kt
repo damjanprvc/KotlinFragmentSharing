@@ -1,6 +1,8 @@
 package com.damjan.kotlinfragmentsharing
 
 import android.app.Activity.RESULT_OK
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -23,13 +25,23 @@ class VideoIntentFragment : Fragment() {
 
     private var videoUri: Uri? = null
     private val VIDEO_APP_REQUEST_CODE = 1000
+    private val videoUriViewModel by lazy {
+        ViewModelProviders.of(activity!!).get(VideoUriViewModel::class.java)
+    }
 
-    private var videoUriListener: OnFragmentVideoUriListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_video_intent, container, false)
+    }
+
+    private fun startVideoViewFragment() {
+        val videoViewFragment = VideoViewFragment.newInstance()
+        val fragmentTransaction = activity!!.supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragmentContainer, videoViewFragment)
+        fragmentTransaction.addToBackStack(null)
+        fragmentTransaction.commit()
     }
 
     private fun callVideoApp() {
@@ -51,9 +63,9 @@ class VideoIntentFragment : Fragment() {
         }
     }
     // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        videoUriListener?.onFragmentVideoUri(uri)
-    }
+//    fun onButtonPressed(uri: Uri) {
+//        videoUriListener?.onFragmentVideoUri(uri)
+//    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -63,26 +75,15 @@ class VideoIntentFragment : Fragment() {
         }
 
         playButton.setOnClickListener {
-            videoUriListener?.onFragmentVideoUri(videoUri)
-        }
-    }
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is OnFragmentVideoUriListener) {
-            videoUriListener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
+            // Using the ViewModel to pass the videoUri
+            if(videoUri != null){
+                videoUriViewModel.videoUri = videoUri
+                startVideoViewFragment()
+            }
+
         }
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        videoUriListener = null
-    }
-
-    interface OnFragmentVideoUriListener {
-        fun onFragmentVideoUri(uri: Uri?)
-    }
 
     companion object {
         val TAG = VideoIntentFragment::class.qualifiedName
