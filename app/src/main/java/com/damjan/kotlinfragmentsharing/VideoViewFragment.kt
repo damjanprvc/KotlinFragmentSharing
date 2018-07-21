@@ -14,12 +14,6 @@ import kotlinx.android.synthetic.main.fragment_video_view.*
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val VID_URI = "videoUri"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [VideoViewFragment.newInstance] factory method to
- * create an instance of this fragment.
- *
- */
 class VideoViewFragment : Fragment() {
 
     private var videoUri: Uri? = null
